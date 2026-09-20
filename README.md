@@ -2,10 +2,11 @@
 
 ## 제출물
 
-- **공개 결과물 주소**: https://t08-passkey-profile.onrender.com  _(Render 배포 후 실제 주소로 확정)_
+- **공개 결과물 주소**: https://t08-passkey-profile.onrender.com
 - **소스 주소**: https://github.com/reum2kr/t08-passkey-profile
 - 아래 "인증 구현 설명서", "짧은 확인 방법", "AI와 내 판단"이 이 문서 안에 모두 들어 있습니다.
-- 요청/응답 원본 로그: [`evidence/evidence-log.json`](evidence/evidence-log.json), 스크린샷: [`evidence/card4-two-passkeys.png`](evidence/card4-two-passkeys.png)
+- 요청/응답 원본 로그: [`evidence/evidence-log.json`](evidence/evidence-log.json)
+- 스크린샷: [`evidence/card4-two-passkeys.png`](evidence/card4-two-passkeys.png)(패스키 2개 등록, 로컬 테스트), [`evidence/live-render-verified.png`](evidence/live-render-verified.png)(실제 배포 주소에서 계정 등록·패스키 등록·비공개 메모까지 직접 확인)
 - 제출물 어디에도 실제 개인정보는 없습니다. 비공개 영역에 들어 있는 메모(스프린트 메모, 지원 후보 목록, 회고, 프로젝트 아이디어 등)는 전부 만들어 넣은 가상의 내용이며, 항목마다 "(가상)"이라고 표시했습니다.
 
 ---
@@ -81,7 +82,7 @@ GET /api/private/items/1 -> 403 (동일)
 + 마지막 남은 패스키 삭제 시도 -> 409 "마지막 남은 패스키는 삭제할 수 없습니다" (서버가 의도적으로 막음)
 ```
 
-테스트는 실제 물리 보안키 대신 Chrome DevTools Protocol의 **WebAuthn 가상 인증기**(virtual authenticator)로 자동화했습니다 — 실제 ECDSA(P-256) 키 쌍 생성, 진짜 CBOR/서명 검증 경로를 그대로 통과하는 진짜 WebAuthn 세리모니이며, 클릭만 사람 대신 스크립트가 했습니다(`scripts/evidence.mjs`).
+테스트는 실제 물리 보안키 대신 Chrome DevTools Protocol의 **WebAuthn 가상 인증기**(virtual authenticator)로 자동화했습니다 — 실제 ECDSA(P-256) 키 쌍 생성, 진짜 CBOR/서명 검증 경로를 그대로 통과하는 진짜 WebAuthn 세리모니이며, 클릭만 사람 대신 스크립트가 했습니다(`scripts/evidence.mjs`). 위 자동화 증거는 개발 중 localhost에서 수집했고(배포된 것과 완전히 동일한 서버 코드), **실제 배포 주소(onrender.com)에서도** 진짜 기기(지문/PIN)로 계정 생성 → 패스키 등록 → 비공개 메모 확인까지 직접 재현해 [`evidence/live-render-verified.png`](evidence/live-render-verified.png)로 남겼습니다.
 
 ### ⑤ AI와 나
 
