@@ -133,8 +133,11 @@ async function main() {
 
   const passkeyListRes = await pageA.evaluate(async () => (await fetch('/api/passkeys')).json());
   record('card4', '패스키 목록 (2개, 각각 이름+등록일)', passkeyListRes);
-  await pageA.screenshot({ path: 'evidence/card4-two-passkeys.png' });
-  record('card4', '스크린샷 저장: evidence/card4-two-passkeys.png');
+  await pageA.locator('#private-unlocked').scrollIntoViewIfNeeded();
+  await pageA.locator('#passkeyList').scrollIntoViewIfNeeded();
+  await pageA.waitForTimeout(200);
+  await pageA.locator('#private-unlocked').screenshot({ path: 'evidence/card4-two-passkeys.png' });
+  record('card4', '스크린샷 저장: evidence/card4-two-passkeys.png (패스키 2개가 실제로 화면에 보이는 상태로 재캡처)');
 
   // seed extra confirmation of >=3 private items (already auto-seeded 3 on registration)
   const itemsBefore = await pageA.evaluate(async () => (await fetch('/api/private/items')).json());
