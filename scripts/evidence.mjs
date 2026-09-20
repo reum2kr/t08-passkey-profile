@@ -24,7 +24,9 @@ async function rawFetch(path, opts = {}) {
   const res = await fetch(BASE + path, opts);
   let body = null;
   try { body = await res.json(); } catch (e) { /* ignore */ }
-  return { status: res.status, headers: Object.fromEntries(res.headers.entries()), body };
+  const headers = Object.fromEntries(res.headers.entries());
+  if (headers['set-cookie']) headers['set-cookie'] = redactCookie(headers['set-cookie']);
+  return { status: res.status, headers, body };
 }
 
 function extractSid(setCookieHeader) {
@@ -82,6 +84,36 @@ async function main() {
   record('card2', 'register/start 요청 본문', { postData: startCall && startCall.postData });
   record('card2', 'register/finish 요청 본문 (개인키 없음 — clientDataJSON/attestationObject만 전송됨)', { postData: finishCall && finishCall.postData });
 
+  // ---- concrete proof that what's stored is a public key, not a secret ----
+  {
+    const { DatabaseSync: DBPeek0 } = await import('node:sqlite');
+    const dbPeek0 = new DBPeek0(new URL('../app.db', import.meta.url).pathname);
+    const row = dbPeek0.prepare(
+      "SELECT device_name, public_key_jwk, sign_count FROM credentials c JOIN users u ON u.id=c.user_id WHERE u.username='areum' LIMIT 1"
+    ).get();
+    dbPeek0.close();
+    record('card2', 'DB에 실제로 저장된 credentials 행 (public_key_jwk는 JWK 공개키 — x,y 좌표만 있고 개인키(d 값)는 없음, 비밀번호 아님)', {
+      device_name: row.device_name,
+      public_key_jwk: JSON.parse(row.public_key_jwk),
+      sign_count: row.sign_count,
+    });
+  }
+
+  // ---- registration challenge uniqueness (separate from login's) ----
+  {
+    const r1 = await rawFetch('/api/register/start', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: 'chalcheck1' }) });
+    const r2 = await rawFetch('/api/register/start', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: 'chalcheck2' }) });
+    record('card2', `등록 challenge 두 번 요청 결과 — 서로 다름: ${r1.body.challenge !== r2.body.challenge}`, { challenge1: r1.body.challenge, challenge2: r2.body.challenge });
+  }
+
+  // ---- cancelling registration (never calling /finish) leaves nothing stored ----
+  {
+    await rawFetch('/api/register/start', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: 'cancelled-user' }) });
+    // ...user cancels the passkey prompt here in real life; the client never calls /finish.
+    const loginAttempt = await rawFetch('/api/login/start', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: 'cancelled-user' }) });
+    record('card2', `register/start만 호출하고 /finish는 호출하지 않은(=등록 취소) 아이디로 로그인 시도 -> ${loginAttempt.status} (계정이 생성되지 않았음이 확인됨)`, loginAttempt);
+  }
+
   const cookiesA = await ctxA.cookies();
   const sidA1 = cookiesA.find((c) => c.name === 'sid').value;
   record('card3', `로그인 식별 방식: 세션 쿠키(sid, HttpOnly) — 서버 sessions 테이블에서 sid -> user_id 매핑 (JWT 미사용). sid=***redacted***`);
@@ -126,6 +158,60 @@ async function main() {
   await pageA.click('#btnLogin');
   await pageA.waitForSelector('#private-unlocked:not([hidden])', { timeout: 10000 });
   record('card3', '로그인 성공 (성공한 로그인 요청)', registerReqs.filter((r) => r.url.includes('/login/')));
+
+  // ---- genuine signature-verification success vs failure (same real ceremony, one with the
+  // signature byte-flipped after the fact) — distinct from the lookup-level rejections above,
+  // this actually reaches crypto.verify() in webauthn.js ----
+  {
+    const b64uHelpers = `
+      function b64uToBuf(b64u){const pad='='.repeat((4-(b64u.length%4))%4);const base64=(b64u+pad).replace(/-/g,'+').replace(/_/g,'/');const bin=atob(base64);const buf=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)buf[i]=bin.charCodeAt(i);return buf.buffer;}
+      function bufToB64u(buf){const bytes=new Uint8Array(buf);let bin='';for(let i=0;i<bytes.length;i++)bin+=String.fromCharCode(bytes[i]);return btoa(bin).replace(/\\+/g,'-').replace(/\\//g,'_').replace(/=+$/,'');}
+    `;
+    async function doRealAssertion(page, tamper) {
+      return page.evaluate(async ({ helpers, tamper }) => {
+        eval(helpers);
+        const startRes = await fetch('/api/login/start', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: 'areum' }) });
+        const opts = await startRes.json();
+        const publicKey = {
+          challenge: b64uToBuf(opts.challenge),
+          timeout: opts.timeout,
+          rpId: opts.rpId,
+          userVerification: opts.userVerification,
+          allowCredentials: opts.allowCredentials.map((c) => ({ type: c.type, id: b64uToBuf(c.id) })),
+        };
+        const assertion = await navigator.credentials.get({ publicKey });
+        let signatureB64u = bufToB64u(assertion.response.signature);
+        if (tamper) {
+          // flip one base64url character in the middle of the real signature —
+          // still well-formed, but no longer the correct signature.
+          const mid = Math.floor(signatureB64u.length / 2);
+          const ch = signatureB64u[mid];
+          const replacement = ch === 'A' ? 'B' : 'A';
+          signatureB64u = signatureB64u.slice(0, mid) + replacement + signatureB64u.slice(mid + 1);
+        }
+        const credentialForServer = {
+          id: bufToB64u(assertion.rawId),
+          response: {
+            clientDataJSON: bufToB64u(assertion.response.clientDataJSON),
+            authenticatorData: bufToB64u(assertion.response.authenticatorData),
+            signature: signatureB64u,
+            userHandle: assertion.response.userHandle ? bufToB64u(assertion.response.userHandle) : null,
+          },
+        };
+        const finishRes = await fetch('/api/login/finish', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ credential: credentialForServer }) });
+        return { status: finishRes.status, body: await finishRes.json() };
+      }, { helpers: b64uHelpers, tamper });
+    }
+
+    // areum is logged out right now (from the /api/logout above, before this reload+login),
+    // but the click on #btnLogin just re-logged us in — log out again so this doesn't
+    // interfere, then run two independent real ceremonies.
+    await pageA.evaluate(async () => { await fetch('/api/logout', { method: 'POST' }); });
+    const goodSig = await doRealAssertion(pageA, false);
+    record('card3', `진짜 서명으로 로그인 -> ${goodSig.status} (성공, crypto.verify 통과)`, goodSig);
+    const badSig = await doRealAssertion(pageA, true);
+    record('card3', `같은 방식이지만 서명 1바이트를 조작해서 제출 -> ${badSig.status} (실패, crypto.verify가 실제로 거절함)`, badSig);
+  }
 
   // ---- replay the exact same login/finish body -> must be rejected (single-use challenge) ----
   const loginFinishCall = registerReqs.find((r) => r.url.endsWith('/api/login/finish'));

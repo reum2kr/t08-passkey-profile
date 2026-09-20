@@ -1,11 +1,11 @@
 [
   {
-    "ts": "2026-09-20T07:50:28.011Z",
+    "ts": "2026-09-20T10:42:50.089Z",
     "section": "card1",
     "note": "--- 공개/비공개 분리, 비인증 접근 확인 ---"
   },
   {
-    "ts": "2026-09-20T07:50:28.082Z",
+    "ts": "2026-09-20T10:42:50.161Z",
     "section": "card1",
     "note": "GET / (로그인 없음) -> 200, 페이지 소스에 비공개 문구 포함 여부: false",
     "extra": {
@@ -14,7 +14,7 @@
     }
   },
   {
-    "ts": "2026-09-20T07:50:28.086Z",
+    "ts": "2026-09-20T10:42:50.165Z",
     "section": "card1",
     "note": "GET /api/private/items (쿠키 없음) -> 401",
     "extra": {
@@ -23,7 +23,7 @@
         "connection": "keep-alive",
         "content-length": "75",
         "content-type": "application/json; charset=utf-8",
-        "date": "Sun, 20 Sep 2026 07:50:28 GMT",
+        "date": "Sun, 20 Sep 2026 10:42:50 GMT",
         "keep-alive": "timeout=5"
       },
       "body": {
@@ -32,7 +32,7 @@
     }
   },
   {
-    "ts": "2026-09-20T07:50:28.088Z",
+    "ts": "2026-09-20T10:42:50.168Z",
     "section": "card1",
     "note": "GET /api/passkeys (쿠키 없음) -> 401",
     "extra": {
@@ -41,7 +41,7 @@
         "connection": "keep-alive",
         "content-length": "75",
         "content-type": "application/json; charset=utf-8",
-        "date": "Sun, 20 Sep 2026 07:50:28 GMT",
+        "date": "Sun, 20 Sep 2026 10:42:50 GMT",
         "keep-alive": "timeout=5"
       },
       "body": {
@@ -50,17 +50,17 @@
     }
   },
   {
-    "ts": "2026-09-20T07:50:28.199Z",
+    "ts": "2026-09-20T10:42:50.281Z",
     "section": "card2",
-    "note": "가상 인증기 1 추가 (계정 areum용, 실제 물리 기기 대신 CDP WebAuthn 가상 인증기로 자동화 테스트): id=a35101b1-f530-4dfc-9c57-8c07dd4900c3"
+    "note": "가상 인증기 1 추가 (계정 areum용, 실제 물리 기기 대신 CDP WebAuthn 가상 인증기로 자동화 테스트): id=687d1595-596b-4c82-a05e-dde4aeb2a677"
   },
   {
-    "ts": "2026-09-20T07:50:29.767Z",
+    "ts": "2026-09-20T10:42:51.026Z",
     "section": "card2",
     "note": "계정 areum 등록 완료, 첫 패스키(노트북) 등록됨, 등록 직후 자동 로그인됨"
   },
   {
-    "ts": "2026-09-20T07:50:29.767Z",
+    "ts": "2026-09-20T10:42:51.026Z",
     "section": "card2",
     "note": "register/start 요청 본문",
     "extra": {
@@ -68,30 +68,72 @@
     }
   },
   {
-    "ts": "2026-09-20T07:50:29.767Z",
+    "ts": "2026-09-20T10:42:51.026Z",
     "section": "card2",
     "note": "register/finish 요청 본문 (개인키 없음 — clientDataJSON/attestationObject만 전송됨)",
     "extra": {
-      "postData": "{\"credential\":{\"id\":\"bp9JgLTFACJ3127XJ0Ix21jTe_SqWJOVxQJoB3kG_B0\",\"response\":{\"clientDataJSON\":\"eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoiRXpBazhqRnZCeWttQy0tRDFzR2pYVnBDekl1ZU9IMXNrWHhYcXJyT09xQSIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCIsImNyb3NzT3JpZ2luIjpmYWxzZX0\",\"attestationObject\":\"o2NmbXRkbm9uZWdhdHRTdG10oGhhdXRoRGF0YVikSZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NFAAAAAQECAwQFBgcIAQIDBAUGBwgAIG6fSYC0xQAid9du1ydCMdtY03v0qliTlcUCaAd5BvwdpQECAyYgASFYIJO2OaEPna9m8gerwdXp7jSvYCaSMw2wArcaLtmxAo-jIlgg9YZR1ohUB8MMoyqAZMLCch_62urspkBSkMOvV2r3TXI\",\"transports\":[\"internal\"]}}}"
+      "postData": "{\"credential\":{\"id\":\"9yDbTLyATtvZ46VKbNR4zLeD6st5SBYPKEId8P7Q8NA\",\"response\":{\"clientDataJSON\":\"eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoiR01ZRkxnS0ZYZ3p2TXNYUVlMLWFLeUI0WFZfaGFDeXgzQ21yN092Qk5qSSIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCIsImNyb3NzT3JpZ2luIjpmYWxzZX0\",\"attestationObject\":\"o2NmbXRkbm9uZWdhdHRTdG10oGhhdXRoRGF0YVikSZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NFAAAAAQECAwQFBgcIAQIDBAUGBwgAIPcg20y8gE7b2eOlSmzUeMy3g-rLeUgWDyhCHfD-0PDQpQECAyYgASFYIKWirgc-5N6HpNmZAsaYYaBNzgUVyVgmNZZh-wcCvUYZIlggnp5rKVuC7Ktp58DyNPYRn2aY_hWA9dvyc5_-_YruQAo\",\"transports\":[\"internal\"]}}}"
     }
   },
   {
-    "ts": "2026-09-20T07:50:29.772Z",
+    "ts": "2026-09-20T10:42:51.027Z",
+    "section": "card2",
+    "note": "DB에 실제로 저장된 credentials 행 (public_key_jwk는 JWK 공개키 — x,y 좌표만 있고 개인키(d 값)는 없음, 비밀번호 아님)",
+    "extra": {
+      "device_name": "테스트 노트북 (가상 인증기1)",
+      "public_key_jwk": {
+        "kty": "EC",
+        "crv": "P-256",
+        "x": "paKuBz7k3oek2ZkCxphhoE3OBRXJWCY1lmH7BwK9Rhk",
+        "y": "np5rKVuC7Ktp58DyNPYRn2aY_hWA9dvyc5_-_YruQAo"
+      },
+      "sign_count": 1
+    }
+  },
+  {
+    "ts": "2026-09-20T10:42:51.044Z",
+    "section": "card2",
+    "note": "등록 challenge 두 번 요청 결과 — 서로 다름: true",
+    "extra": {
+      "challenge1": "yHx7VPBHO0ngUtpRYwZuSJQC56s94F2UU91nPlf_p70",
+      "challenge2": "T8-r10u2OZXC-_yy_mqEWo_Qy_IJDaTPf6av3_Uqibg"
+    }
+  },
+  {
+    "ts": "2026-09-20T10:42:51.054Z",
+    "section": "card2",
+    "note": "register/start만 호출하고 /finish는 호출하지 않은(=등록 취소) 아이디로 로그인 시도 -> 404 (계정이 생성되지 않았음이 확인됨)",
+    "extra": {
+      "status": 404,
+      "headers": {
+        "connection": "keep-alive",
+        "content-length": "44",
+        "content-type": "application/json; charset=utf-8",
+        "date": "Sun, 20 Sep 2026 10:42:51 GMT",
+        "keep-alive": "timeout=5"
+      },
+      "body": {
+        "error": "해당 아이디가 없습니다"
+      }
+    }
+  },
+  {
+    "ts": "2026-09-20T10:42:51.056Z",
     "section": "card3",
     "note": "로그인 식별 방식: 세션 쿠키(sid, HttpOnly) — 서버 sessions 테이블에서 sid -> user_id 매핑 (JWT 미사용). sid=***redacted***"
   },
   {
-    "ts": "2026-09-20T07:50:29.773Z",
+    "ts": "2026-09-20T10:42:51.056Z",
     "section": "card4",
-    "note": "가상 인증기 2 추가 (계정 areum의 두 번째 기기 역할): id=165ff4df-ff54-42a8-a4f4-d6fe92ab88ae"
+    "note": "가상 인증기 2 추가 (계정 areum의 두 번째 기기 역할): id=5c67dc0c-ea76-4f27-9ba8-b3da8800c8f6"
   },
   {
-    "ts": "2026-09-20T07:50:31.575Z",
+    "ts": "2026-09-20T10:42:53.490Z",
     "section": "card4",
     "note": "두 번째 패스키(휴대폰) 등록 완료"
   },
   {
-    "ts": "2026-09-20T07:50:31.583Z",
+    "ts": "2026-09-20T10:42:53.498Z",
     "section": "card4",
     "note": "패스키 목록 (2개, 각각 이름+등록일)",
     "extra": {
@@ -99,25 +141,25 @@
         {
           "id": 1,
           "device_name": "테스트 노트북 (가상 인증기1)",
-          "created_at": "2026-09-20 07:50:29",
+          "created_at": "2026-09-20 10:42:50",
           "last_used_at": null
         },
         {
           "id": 2,
           "device_name": "휴대폰 (가상 인증기2)",
-          "created_at": "2026-09-20 07:50:30",
+          "created_at": "2026-09-20 10:42:51",
           "last_used_at": null
         }
       ]
     }
   },
   {
-    "ts": "2026-09-20T07:50:31.632Z",
+    "ts": "2026-09-20T10:42:53.548Z",
     "section": "card4",
     "note": "스크린샷 저장: evidence/card4-two-passkeys.png"
   },
   {
-    "ts": "2026-09-20T07:50:31.640Z",
+    "ts": "2026-09-20T10:42:53.554Z",
     "section": "card1",
     "note": "비공개 항목 개수(자동 시드): 3개",
     "extra": [
@@ -127,21 +169,21 @@
     ]
   },
   {
-    "ts": "2026-09-20T07:50:31.652Z",
+    "ts": "2026-09-20T10:42:53.566Z",
     "section": "card3",
     "note": "로그인 challenge 두 번 요청 결과 — 서로 다름: true",
     "extra": {
-      "challenge1": "UQIclZExGK9QaW7NLTpDYdcfN_oLvGGuyY3hQuGVy5g",
-      "challenge2": "Z-1tQ5DLi0Xk38G2nHR4imT6KS4ioTZEkTY2HvECDJg"
+      "challenge1": "wWu3M3ksyxW4xM4EBigrUsyMcLT9PfkdI5avpRcHnsU",
+      "challenge2": "sdezvZBPv7s0CM1dsIxGthMyPe3S0kIUn8XZH6UInCs"
     }
   },
   {
-    "ts": "2026-09-20T07:50:31.656Z",
+    "ts": "2026-09-20T10:42:53.571Z",
     "section": "card3",
     "note": "로그아웃 완료"
   },
   {
-    "ts": "2026-09-20T07:50:31.661Z",
+    "ts": "2026-09-20T10:42:53.575Z",
     "section": "card3",
     "note": "로그아웃 직후 같은 세션으로 /api/private/items 재요청 -> 401 (거절 확인)",
     "extra": {
@@ -152,7 +194,7 @@
     }
   },
   {
-    "ts": "2026-09-20T07:50:32.161Z",
+    "ts": "2026-09-20T10:42:55.213Z",
     "section": "card3",
     "note": "로그인 성공 (성공한 로그인 요청)",
     "extra": [
@@ -165,13 +207,36 @@
       {
         "url": "http://localhost:3000/api/login/finish",
         "method": "POST",
-        "postData": "{\"credential\":{\"id\":\"anL_nr_rDUFJlSYv4_NUeqCZpssJDApRFqEjMb9iSJg\",\"response\":{\"clientDataJSON\":\"eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiN2ZQUkFZNkd3d1BiX1R2bHZXVHRLallBbmwxVjZDcDRkUFYyUzdmWWJRWSIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCIsImNyb3NzT3JpZ2luIjpmYWxzZX0\",\"authenticatorData\":\"SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2MFAAAAAw\",\"signature\":\"MEUCIFBgILEv7IZc7JcZ9fMgx5btKdBt8HMZ1Wi2BhBaYKw5AiEAjPCRebQePTb44ODU6lTztRjVj7SMJGWT9S4u0t4y6b4\",\"userHandle\":\"mWbVanoZc2KCgwGxcIO7tw\"}}}",
+        "postData": "{\"credential\":{\"id\":\"hbABYRIRmMI30o2RQX7q1gsoCtIEWupaQIQlC0Cchbs\",\"response\":{\"clientDataJSON\":\"eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiaGRDai0tZFRmRnVOY0RhaEZTdGQwY2dqcnFtdXpmVHZ5djd2dDVZTGY5ZyIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCIsImNyb3NzT3JpZ2luIjpmYWxzZX0\",\"authenticatorData\":\"SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2MFAAAAAw\",\"signature\":\"MEQCIH_Cl-wMoqRUkrdzvmIYUt1xtQkl3UjxLfX3Qyb5h-frAiBB15xLa1Pmp_d-oA-NDtpddqasALvxyYPuhS1Hw7aFQg\",\"userHandle\":\"8X2ff1lMk4MejsYkP86szQ\"}}}",
         "status": 200
       }
     ]
   },
   {
-    "ts": "2026-09-20T07:50:32.175Z",
+    "ts": "2026-09-20T10:42:55.243Z",
+    "section": "card3",
+    "note": "진짜 서명으로 로그인 -> 200 (성공, crypto.verify 통과)",
+    "extra": {
+      "status": 200,
+      "body": {
+        "ok": true,
+        "username": "areum"
+      }
+    }
+  },
+  {
+    "ts": "2026-09-20T10:42:55.258Z",
+    "section": "card3",
+    "note": "같은 방식이지만 서명 1바이트를 조작해서 제출 -> 401 (실패, crypto.verify가 실제로 거절함)",
+    "extra": {
+      "status": 401,
+      "body": {
+        "error": "로그인 검증 실패: 서명 검증에 실패했습니다"
+      }
+    }
+  },
+  {
+    "ts": "2026-09-20T10:42:55.264Z",
     "section": "card3",
     "note": "이미 쓴 로그인 응답(challenge)을 그대로 재전송 -> 400 (거절됨, 재사용 불가 확인)",
     "extra": {
@@ -182,7 +247,7 @@
     }
   },
   {
-    "ts": "2026-09-20T07:50:32.204Z",
+    "ts": "2026-09-20T10:42:55.278Z",
     "section": "card4",
     "note": "패스키 \"테스트 노트북 (가상 인증기1)\" 삭제 -> 200",
     "extra": {
@@ -193,17 +258,17 @@
     }
   },
   {
-    "ts": "2026-09-20T07:50:33.949Z",
+    "ts": "2026-09-20T10:42:57.053Z",
     "section": "card4",
     "note": "남은 패스키(휴대폰, authenticator2)로는 정상 로그인 성공 (authenticator1은 브라우저에서도 완전히 제거된 상태)"
   },
   {
-    "ts": "2026-09-20T07:50:33.960Z",
+    "ts": "2026-09-20T10:42:57.060Z",
     "section": "card4",
     "note": "삭제 후 새 로그인 challenge의 allowCredentials 개수: 1 (삭제된 패스키는 더 이상 목록에 없음)"
   },
   {
-    "ts": "2026-09-20T07:50:33.965Z",
+    "ts": "2026-09-20T10:42:57.064Z",
     "section": "card4",
     "note": "삭제된 패스키의 credential_id로 직접 로그인 시도 -> 400 (거절, 더 이상 사용 불가)",
     "extra": {
@@ -212,9 +277,9 @@
         "connection": "keep-alive",
         "content-length": "64",
         "content-type": "application/json; charset=utf-8",
-        "date": "Sun, 20 Sep 2026 07:50:33 GMT",
+        "date": "Sun, 20 Sep 2026 10:42:57 GMT",
         "keep-alive": "timeout=5",
-        "set-cookie": "sid=ZO9v3rIMqkspsi9KRnkoqwGXSZNXkkVm; HttpOnly; Path=/; SameSite=Lax; Max-Age=604800"
+        "set-cookie": "sid=***redacted***; HttpOnly; Path=/; SameSite=Lax; Max-Age=604800"
       },
       "body": {
         "error": "해당 계정에 속하지 않은 패스키입니다"
@@ -222,7 +287,7 @@
     }
   },
   {
-    "ts": "2026-09-20T07:50:33.975Z",
+    "ts": "2026-09-20T10:42:57.075Z",
     "section": "card4",
     "note": "마지막 남은 패스키 삭제 시도 -> 409 (서버가 막음)",
     "extra": {
@@ -233,12 +298,12 @@
     }
   },
   {
-    "ts": "2026-09-20T07:50:34.612Z",
+    "ts": "2026-09-20T10:42:57.798Z",
     "section": "card5",
     "note": "두 번째 계정 guest2 등록 완료 (서로 다른 사람이라고 가정한 테스트 계정)"
   },
   {
-    "ts": "2026-09-20T07:50:34.664Z",
+    "ts": "2026-09-20T10:42:57.848Z",
     "section": "card5",
     "note": "areum 계정의 비공개 항목",
     "extra": [
@@ -257,7 +322,7 @@
     ]
   },
   {
-    "ts": "2026-09-20T07:50:34.664Z",
+    "ts": "2026-09-20T10:42:57.849Z",
     "section": "card5",
     "note": "guest2 계정의 비공개 항목 (서로 다른 내용)",
     "extra": [
@@ -276,7 +341,7 @@
     ]
   },
   {
-    "ts": "2026-09-20T07:50:34.673Z",
+    "ts": "2026-09-20T10:42:57.856Z",
     "section": "card5",
     "note": "areum 세션으로 guest2의 항목(id=4) 조회 시도 -> 403",
     "extra": {
@@ -287,7 +352,7 @@
     }
   },
   {
-    "ts": "2026-09-20T07:50:34.682Z",
+    "ts": "2026-09-20T10:42:57.861Z",
     "section": "card5",
     "note": "guest2 세션으로 areum의 항목(id=1) 조회 시도 -> 403",
     "extra": {
@@ -298,12 +363,12 @@
     }
   },
   {
-    "ts": "2026-09-20T07:50:34.695Z",
+    "ts": "2026-09-20T10:42:57.874Z",
     "section": "card5",
     "note": "거절 전후 자료 건수 비교 — areum: 3 -> 3, guest2: 3 -> 3 (변화 없음 확인)"
   },
   {
-    "ts": "2026-09-20T07:50:34.705Z",
+    "ts": "2026-09-20T10:42:57.884Z",
     "section": "card5",
     "note": "areum 세션으로 쿼리스트링에 다른 계정을 적어 보낸 요청 (?user_id=...&as=guest2) -> 서버는 세션의 실제 로그인 사용자만 사용, 그래도 areum 자신의 자료만 반환됨",
     "extra": [
@@ -313,12 +378,12 @@
     ]
   },
   {
-    "ts": "2026-09-20T07:50:34.705Z",
+    "ts": "2026-09-20T10:42:57.884Z",
     "section": "card5",
     "note": "이 거절/무시를 만드는 소스 위치: server.js의 requireAuth() 함수(세션의 user.id만 신뢰) 및 GET /api/private/items, GET /api/private/items/:id 핸들러의 `row.user_id !== user.id` 검사 — 클라이언트가 보낸 user_id/as 파라미터는 어디에서도 읽지 않음"
   },
   {
-    "ts": "2026-09-20T07:50:34.718Z",
+    "ts": "2026-09-20T10:42:57.891Z",
     "section": "card5",
     "note": "guest2 로그인 흐름 중, areum 소유의 패스키 credential_id로 응답을 위조해 제출 -> 400 (거절: 계정에 속하지 않은 패스키)",
     "extra": {
@@ -327,9 +392,9 @@
         "connection": "keep-alive",
         "content-length": "64",
         "content-type": "application/json; charset=utf-8",
-        "date": "Sun, 20 Sep 2026 07:50:34 GMT",
+        "date": "Sun, 20 Sep 2026 10:42:57 GMT",
         "keep-alive": "timeout=5",
-        "set-cookie": "sid=kgdu6kVUSH_2MeqRF1vjH_Q3sEUd3HSV; HttpOnly; Path=/; SameSite=Lax; Max-Age=604800"
+        "set-cookie": "sid=***redacted***; HttpOnly; Path=/; SameSite=Lax; Max-Age=604800"
       },
       "body": {
         "error": "해당 계정에 속하지 않은 패스키입니다"

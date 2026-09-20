@@ -46,43 +46,69 @@ PostgreSQL 대신 SQLite를 쓴 것도 같은 이유입니다(`pg` 설치 불가
 
 ### ④ 안 열리는 것을 확인한 기록
 
-전체 원본 로그는 `evidence/evidence-log.json`에 있습니다. 네 가지 확인 각각 성공/실패 요청을 나란히 남겼습니다.
+전체 원본 로그는 `evidence/evidence-log.json`에 있습니다. 네 가지 확인 각각 성공/실패(또는 거절) 요청을 나란히 남겼습니다.
 
 **1) 로그인 없이 열기**
 ```
-GET /api/private/items (쿠키 없음) -> 401 {"error":"로그인이 필요합니다 (패스키로 인증되지 않음)"}
-GET /api/passkeys       (쿠키 없음) -> 401 (동일)
-GET /  (쿠키 없음) -> 200, 그러나 페이지 소스에 비공개 문구("다음 스프린트 메모" 등) 없음 확인
+[거절] GET /api/private/items (쿠키 없음) -> 401 {"error":"로그인이 필요합니다 (패스키로 인증되지 않음)"}
+[거절] GET /api/passkeys       (쿠키 없음) -> 401 (동일)
+       GET /  (쿠키 없음) -> 200, 그러나 페이지 소스에 비공개 문구("다음 스프린트 메모" 등) 없음 확인
+[성공] 같은 패스키로 로그인한 뒤 GET /api/private/items -> 200, 항목 3개 정상 반환 (아래 3번 항목의 로그인 성공 참고)
 ```
 
 **2) 남의 패스키로 열기**
 ```
-guest2 계정으로 로그인 시도하면서, areum 소유의 credential_id로 응답을 위조해 제출
-POST /api/login/finish -> 400 "해당 계정에 속하지 않은 패스키입니다"
+[거절] guest2 로그인 흐름 중, areum 소유의 credential_id로 응답을 위조해 제출
+       POST /api/login/finish -> 400 "해당 계정에 속하지 않은 패스키입니다"
+[성공] (대조군) areum 본인의 credential_id로 진짜 서명까지 만들어 제출 -> 200 (아래 서명 검증 항목)
 
-+ areum 세션으로 guest2의 항목(id=4) 직접 조회
-GET /api/private/items/4 -> 403 "다른 계정의 자료입니다"
-+ guest2 세션으로 areum의 항목(id=1) 직접 조회
-GET /api/private/items/1 -> 403 (동일)
-+ 거절 전후 자료 건수: areum 3->3, guest2 3->3 (변화 없음)
+[거절] areum 세션으로 guest2의 항목(id=4) 직접 조회 -> GET /api/private/items/4 -> 403 "다른 계정의 자료입니다"
+[거절] guest2 세션으로 areum의 항목(id=1) 직접 조회 -> GET /api/private/items/1 -> 403 (동일)
+[성공] (대조군) areum 세션으로 areum 자신의 항목(id=1) 조회 -> GET /api/private/items/1 -> 200
+       거절 전후 자료 건수: areum 3->3, guest2 3->3 (변화 없음)
+```
+
+서명 검증 자체가 진짜로 동작하는지도 별도로 확인했습니다 — 위조된 credential_id(위 항목)는 사실 DB 조회 단계에서 걸러지는 것이라, **서명 검증(`crypto.verify`) 자체**가 살아있는지는 다른 테스트로 증명했습니다: 진짜 기기로 진짜 서명을 만든 뒤, 그 서명 값의 문자 하나만 바꿔서 제출.
+```
+[성공] 진짜 서명 그대로 제출 -> POST /api/login/finish -> 200
+[거절] 같은 서명에서 한 글자만 조작해서 제출 -> POST /api/login/finish -> 401 "서명 검증에 실패했습니다"
 ```
 
 **3) 이미 쓴 질문(challenge) 재사용**
 ```
-로그인 성공: POST /api/login/finish -> 200 {"ok":true,"username":"areum"}
-같은 요청 본문을 그대로 재전송: POST /api/login/finish -> 400 "로그인 요청이 없거나 이미 처리(또는 만료)되었습니다"
+[성공] 로그인 성공: POST /api/login/finish -> 200 {"ok":true,"username":"areum"}
+[거절] 같은 요청 본문을 그대로 재전송: POST /api/login/finish -> 400 "로그인 요청이 없거나 이미 처리(또는 만료)되었습니다"
+```
+등록 쪽 challenge도 매 요청 다른 값이 나오는 것을 별도로 확인했습니다: 서로 다른 아이디로 `register/start`를 두 번 호출 → challenge 값이 서로 다름을 확인.
+
+등록을 취소했을 때(=`/finish`를 끝까지 부르지 않았을 때) 정말 아무것도 안 남는지도 확인했습니다:
+```
+POST /api/register/start {username: "cancelled-user"} 만 호출하고 /finish는 호출하지 않음(=사람이 패스키 창을 취소한 상황)
+그 아이디로 로그인 시도: POST /api/login/start -> 404 "해당 아이디가 없습니다" (계정이 아예 생성되지 않았음)
 ```
 
 **4) 패스키 삭제 뒤 로그인**
 ```
 패스키 "테스트 노트북" 삭제: DELETE /api/passkeys/1 -> 200
 그 패스키가 물려 있던 기기(가상 인증기)를 브라우저에서도 완전히 제거
-로그인 재시도 -> 200 (남은 패스키 "휴대폰"으로 성공)
-삭제된 패스키의 credential_id로 직접 로그인 시도 -> 400 "해당 계정에 속하지 않은 패스키입니다" (더 이상 사용 불가)
-+ 마지막 남은 패스키 삭제 시도 -> 409 "마지막 남은 패스키는 삭제할 수 없습니다" (서버가 의도적으로 막음)
+[성공] 로그인 재시도 -> 200 (남은 패스키 "휴대폰"으로 성공)
+[거절] 삭제된 패스키의 credential_id로 직접 로그인 시도 -> 400 "해당 계정에 속하지 않은 패스키입니다" (더 이상 사용 불가)
+[거절] 마지막 남은 패스키 삭제 시도 -> 409 "마지막 남은 패스키는 삭제할 수 없습니다" (서버가 의도적으로 막음)
 ```
 
-테스트는 실제 물리 보안키 대신 Chrome DevTools Protocol의 **WebAuthn 가상 인증기**(virtual authenticator)로 자동화했습니다 — 실제 ECDSA(P-256) 키 쌍 생성, 진짜 CBOR/서명 검증 경로를 그대로 통과하는 진짜 WebAuthn 세리모니이며, 클릭만 사람 대신 스크립트가 했습니다(`scripts/evidence.mjs`). 위 자동화 증거는 개발 중 localhost에서 수집했고(배포된 것과 완전히 동일한 서버 코드), **실제 배포 주소(onrender.com)에서도** 진짜 기기(지문/PIN)로 계정 생성 → 패스키 등록 → 비공개 메모 확인까지 직접 재현해 [`evidence/live-render-verified.png`](evidence/live-render-verified.png)로 남겼습니다.
+**저장된 값이 정말 "공개키"인지 직접 확인** — DB에서 실제로 credentials 테이블 한 행을 그대로 꺼내봤습니다:
+```json
+{
+  "device_name": "테스트 노트북 (가상 인증기1)",
+  "public_key_jwk": { "kty": "EC", "crv": "P-256",
+    "x": "paKuBz7k3oek2ZkCxphhoE3OBRXJWCY1lmH7BwK9Rhk",
+    "y": "np5rKVuC7Ktp58DyNPYRn2aY_hWA9dvyc5_-_YruQAo" },
+  "sign_count": 1
+}
+```
+`x`, `y`는 타원곡선 공개키의 좌표일 뿐이고, 이 값만으로는 로그인할 수 없습니다(서명은 개인키로만 만들 수 있음). 개인키에 해당하는 `d` 값은 어디에도 없고, 등록 요청 본문(위 ②)에도 개인키 필드가 없습니다 — 등록 과정 내내 개인키가 기기 밖으로 나간 적이 없다는 뜻입니다.
+
+**패스키 저장 위치**: 자동화 테스트는 실제 물리 보안키 대신 Chrome DevTools Protocol의 **WebAuthn 가상 인증기**(virtual authenticator)를 썼습니다 — 실제 ECDSA(P-256) 키 쌍 생성, 진짜 CBOR/서명 검증 경로를 그대로 통과하는 진짜 WebAuthn 세리모니이며, 클릭만 사람 대신 스크립트가 했습니다(`scripts/evidence.mjs`). 이 자동화 증거는 개발 중 localhost에서 수집했고(배포된 것과 완전히 동일한 서버 코드), **실제 배포 주소(onrender.com)에서도** 직접 브라우저로 계정 생성 → 패스키 등록 → 비공개 메모 확인까지 재현했습니다. 이때 등록 화면에서 패스키를 실제로 저장한 곳은 기기 자체(Windows Hello 등)가 아니라 **Chrome의 구글 비밀번호 관리자**(Google Password Manager, 구글 계정에 동기화되는 방식)였고, 그 증거를 [`evidence/live-render-verified.png`](evidence/live-render-verified.png)로 남겼습니다.
 
 ### ⑤ AI와 나
 
