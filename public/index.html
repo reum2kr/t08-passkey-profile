@@ -894,53 +894,32 @@ button.evidence-link { background: none; border: none; padding: 0; font: inherit
   </div>
 </footer>
 <script>
+  const modal = document.getElementById('evidence-modal');
+  const modalImg = document.getElementById('evidence-modal-img');
+  const modalCaption = document.getElementById('evidence-modal-caption');
+
+  function openEvidenceModal(src, caption) {
+    modalImg.src = src;
+    modalCaption.textContent = caption || '';
+    modal.hidden = false;
+  }
+
   document.querySelectorAll('[data-evidence-img]').forEach(btn => {
     btn.addEventListener('click', () => {
-      const modal = document.getElementById('evidence-modal');
-      const img = document.getElementById('evidence-modal-img');
-      const caption = document.getElementById('evidence-modal-caption');
-      img.src = btn.getAttribute('data-evidence-img');
-      caption.textContent = btn.getAttribute('data-evidence-caption') || '';
-      modal.hidden = false;
+      openEvidenceModal(btn.getAttribute('data-evidence-img'), btn.getAttribute('data-evidence-caption'));
     });
   });
-  const modal = document.getElementById('evidence-modal');
-  modal.querySelector('.evidence-modal-backdrop').addEventListener('click', () => modal.hidden = true);
-  modal.querySelector('.evidence-modal-close').addEventListener('click', () => modal.hidden = true);
-</script>
-<script>
-const modal = document.getElementById('evidence-modal');
-const img = document.getElementById('evidence-modal-img');
-const caption = document.getElementById('evidence-modal-caption');
-
-/* 이중화 Evidence */
-document.querySelectorAll('[data-이중화.img]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    img.src = btn.getAttribute('data-이중화.img');
-    caption.textContent = btn.getAttribute('data-evidence-caption') || '';
-    modal.hidden = false;
+  document.querySelectorAll('[data-이중화\\.img]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      openEvidenceModal(btn.getAttribute('data-이중화.img'), btn.getAttribute('data-evidence-caption'));
+    });
   });
-});
-
-/* 리눅스 Evidence */
-document.querySelectorAll('[data-리눅스img]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    img.src = btn.getAttribute('data-리눅스img');
-    caption.textContent = btn.getAttribute('data-evidence-caption') || '';
-    modal.hidden = false;
+  document.querySelectorAll('[data-리눅스img]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      openEvidenceModal(btn.getAttribute('data-리눅스img'), btn.getAttribute('data-evidence-caption'));
+    });
   });
-});
 
-/* 모달 닫기 */
-modal.querySelector('.evidence-modal-backdrop').addEventListener('click', () => {
-  modal.hidden = true;
-});
-
-modal.querySelector('.evidence-modal-close').addEventListener('click', () => {
-  modal.hidden = true;
-});
-</script>
-  const modal = document.getElementById('evidence-modal');
   modal.querySelector('.evidence-modal-backdrop').addEventListener('click', () => modal.hidden = true);
   modal.querySelector('.evidence-modal-close').addEventListener('click', () => modal.hidden = true);
 </script>
