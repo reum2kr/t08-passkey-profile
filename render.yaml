@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: t08-passkey-profile
+    runtime: node
+    plan: free
+    buildCommand: "true"
+    startCommand: "node --experimental-sqlite server.js"
+    envVars:
+      - key: RP_ID
+        value: t08-passkey-profile.onrender.com
+      - key: ORIGIN
+        value: https://t08-passkey-profile.onrender.com
+      - key: RP_NAME
+        value: "Areum Jang — Private Space"
+    # NOTE: no database service here on purpose — see README "⑥ 아직 못 막은 것".
+    # Data lives in a SQLite file on the web service's own local disk
+    # (no npm packages were installable in the dev session that built this,
+    # so PostgreSQL + `pg` wasn't an option; Node's built-in node:sqlite was).
+    # That disk is NOT a persistent volume on the free plan, so a redeploy
+    # or restart wipes accounts/passkeys/items. Fine for a graded demo,
+    # not fine for a real product.
